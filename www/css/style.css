@@ -1,0 +1,15 @@
+body {
+	font-family: "Georgia", serif;
+	background-color: #fff;
+	border-top: 4px solid #333;
+}
+
+
+div#container {
+	margin: 0px auto;
+	width: 755px;
+}
+
+li {
+    margin-left: 10px;
+}
