@@ -16,21 +16,27 @@ class Pop_Handler_Sample extends Pop_Handler
 		$t = new Pop_Template($r);
         $att = new Attribute();
         $atts = array();
-        foreach ($att->listAll() as $a) {
+        foreach ($att->find() as $a) {
             $a->getHasMany('Value');
             $atts[] = $a;
         }
-        //$a2 = new Attribute();
-        //$a2->addWhere('ascii_id','title','=');
-        //$a2->findOne();
         $t->assign('atts',$atts);
 		$r->renderResponse($t->fetch('sample.tpl'));
 	}
 
 	public function postToSample($r) 
 	{
-		$r->renderResponse($r->get('meta'));
-	}
+		$meta = $r->get('meta');
+        $parts = explode(':',$meta);
+        if (count($parts) > 1) {
+            $att = $parts[0];
+            $val = $parts[1];
+        } else {
+            $att = $meta;
+        }
+        $a = Attribute::findOrCreate($att);
+        $r->renderRedirect('sample');
 
+	}
 }
 

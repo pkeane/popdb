@@ -2,18 +2,50 @@
 
 class Pop_Db_Exception extends Exception {}
 
-class Pop_Db
+class Pop_Db implements IteratorAggregate
 {
 
     public $db;
+    private $fields = array(); 
     protected $table;
     protected $order_by;
     protected $limit;
-    protected $qualifiers;
+    protected $qualifiers = array();
 
     public function __construct() 
     { 
+        $table = $this->getTable();
         $this->db = new PDO('sqlite:'.SQLITE_PATH);
+        $this->table = $table;
+        $sth = $this->db->prepare("PRAGMA table_info($table)");
+        $sth->execute();
+        while ($row = $sth->fetch()) {
+            if ('id' != $row['name']) {
+                $this->fields[$row['name']] = null;
+            }
+        }
+    }
+
+    public function __get( $key )
+    {
+        if ( array_key_exists( $key, $this->fields ) ) {
+            return $this->fields[ $key ];
+        }
+        //automatically call accessor method if it exists
+        $classname = get_class($this);
+        $method = 'get'.ucfirst($key);
+        if (method_exists($classname,$method)) {
+            return $this->{$method}();
+        }	
+    }
+
+    public function __set( $key, $value )
+    {
+        if ( array_key_exists( $key, $this->fields ) ) {
+            $this->fields[ $key ] = $value;
+            return true;
+        }
+        return false;
     }
 
     public function load($id)
@@ -26,7 +58,7 @@ class Pop_Db
         $sth->execute(array($id));
         $row = $sth->fetch(PDO::FETCH_ASSOC);
         foreach ($row as $k => $v) {
-            $this->$k = $v;
+            $this->fields[$k] = $v;
         }
         return $this;
     }
@@ -38,6 +70,12 @@ class Pop_Db
         $sets = array();
         $bind = array();
         $limit = '';
+        foreach( array_keys( $this->fields ) as $field ) {
+            if (isset($this->fields[ $field ]) && 'id' != $field) {
+                $sets []= "$field = ?";
+                $bind[] = $this->fields[ $field ];
+            }
+        }
         foreach ($this->qualifiers as $qual) {
             $f = $qual['field'];
             $op = $qual['operator'];
@@ -66,10 +104,14 @@ class Pop_Db
             throw new PDOException('cannot create statement handle');
         }
 
-        $sth->execute();
+        $sth->execute($bind);
         $list = array();
-        while ($obj = $sth->fetchObject(get_class($this)))
-        {
+        while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+            $class = get_class($this);
+            $obj = new $class;
+            foreach ($row as $k => $v) {
+                $obj->$k = $v;
+            }
             $list[] = $obj;
         }
         return $list;
@@ -82,13 +124,44 @@ class Pop_Db
         $set = $this->find();
         if (count($set)) {
             foreach ($set[0] as $k => $v) {
-                if (property_exists(get_class($this),$k)) {
-                    $this->$k = $v;
+                if ( array_key_exists( $k, $this->fields ) ) {
+                    $this->fields[ $k ] = $v;
                 }
             }
             return $this;
         }
         return false;
+    }
+
+    public function insert()
+    { 
+        $db = $this->db;
+        $fields = array();
+        $inserts = array();
+        $bind = array();
+        foreach( array_keys( $this->fields ) as $field )
+        {
+            $fields[]= $field;
+            $inserts[]= "?";
+            $bind[] = $this->fields[ $field ];
+        }
+        $field_set = join( ", ", $fields );
+        $insert = join( ", ", $inserts );
+        $sql = "INSERT INTO ".$this->table. 
+            " ( $field_set ) VALUES ( $insert )";
+        $sth = $db->prepare( $sql );
+        if (! $sth) {
+            $error = $db->errorInfo();
+            throw new Exception("problem on insert: " . $error[2]);
+        }
+        if ($sth->execute($bind)) {
+            $last_id = $db->lastInsertId();
+            $this->id = $last_id;
+            return $last_id;
+        } else { 
+            $error = $sth->errorInfo();
+            throw new Exception("could not insert: " . $error[2]);
+        }
     }
 
     public function addWhere($field,$value,$operator)
@@ -151,22 +224,6 @@ class Pop_Db
         return $list;
     }
 
-    public function listAll() 
-    {
-        $list = array();
-        $table = $this->getTable();
-        $sth = $this->db->prepare("SELECT * FROM $table");
-        if (!$sth) {
-            throw new PDOException('cannot create statement handle');
-        }
-        $sth->execute();
-        while ($obj = $sth->fetchObject(get_class($this)))
-        {
-            $list[] = $obj;
-        }
-        return $list;
-    }
-
     public function getTable()
     {
         if ($this->table) {
@@ -175,5 +232,48 @@ class Pop_Db
             return strtolower(get_class($this));
         }
     } 
+
+    function update()
+    {
+        foreach( $this->fields as $key => $val) {
+            $fields[]= $key." = ?";
+            $values[]= $val;
+        }
+        $set = join( ",", $fields );
+        $sql = "UPDATE {$this->{'table'}} SET $set WHERE id=?";
+        $values[] = $this->id;
+        $sth = $this->db->prepare( $sql );
+        if (!$sth->execute($values)) {
+            $errs = $sth->errorInfo();
+            if (isset($errs[2])) {
+                throw new PDOException('could not update '.$errs[2]);
+            }
+        } else {
+            return true;
+        }
+    }
+
+    function delete()
+    {
+        $sth = $this->db->prepare('DELETE FROM '.$this->table.' WHERE id = ?');
+        return $sth->execute(array($this->id));
+    }
+
+    //implement SPL IteratorAggregate:
+    //now simply use 'foreach' to iterate 
+    //over object properties
+    public function getIterator()
+    {
+        return new ArrayObject($this->fields);
+    }
+
+    public function asArray()
+    {
+        foreach ($this as $k => $v) {
+            $my_array[$k] = $v;
+        }
+        return $my_array;
+    }
+
 }
 
