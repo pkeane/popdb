@@ -21,14 +21,12 @@ a { margin:0; padding:0; font-size:100%; vertical-align:baseline; background:tra
 
 /* END RESET CSS */
 
-body { font:13px sans-serif; *font-size:small; *font:x-small; line-height:1.22; }
+body { font:11px sans-serif; *font-size:small; *font:x-small; line-height:1.22; }
 table { font-size:inherit; font:100%; }
 select, input, textarea { font:99% sans-serif; }
 
 /* minimal base styles */
 
-/* #444 looks better than black: twitter.com/H_FJ/statuses/11800719859 */ 
-body, select, input, textarea { color:#444; }
 h1,h2,h3,h4,h5,h6 { margin: 0; font-weight: bold;}
 h1 { font-size: 20px; }
 h2 { font-size: 18px; }

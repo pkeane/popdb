@@ -1,15 +1,118 @@
 body {
-	font-family: "Georgia", serif;
+    color: #334;
+	font-family: verdana, sans-serif;
 	background-color: #fff;
-	border-top: 4px solid #333;
+}
+
+div#header {
+    height: 18px;
+	background-color: #f1f7f8;
+	background-color: #e0e6ef;
+    padding: 3px 10px 5px 10px;
+    margin: 6px 0 0 0;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+}
+
+div#header h1 {
+    float: left;
+    margin-top: -1px;
+    margin-right: 10px;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+div#header form {
+    float: right;
+    margin-right: 0px;
 }
 
 
 div#container {
 	margin: 0px auto;
-	width: 755px;
+	width: 66%;
+}
+
+div#main {
+    padding: 10px 0px 0 10px;
+}
+
+form#attribute {
+    padding: 10px;
+    background-color: #fff0d0;
+    float: right;
+    margin-top: -6px;
+    margin-right: 0;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+}
+
+form#item {
+    padding: 10px;
+    background-color: #fff0d0;
+    float: right;
+    margin-top: -6px;
+    margin-right: 0;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+}
+
+label {
+    font-weight: bold;
+    color: #666;
+    font-size: 11px;
+    display: block;
+}
+
+#main h2 {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.attributes ul {
+    margin: 10px;
 }
 
 li {
-    margin-left: 10px;
+    margin: 4px 0;
+}
+
+a.delete {
+    color: #c00;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+div.marker {
+    float: left;
+    margin-right: 6px;
+    width: 14px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+}
+
+dl.metadata {
+    padding: 10px;
+    background-color: #fff0d0;
+    background-color: #f3f3f3;
+    margin-top: 12px;
+    margin-right: 0;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+}
+
+dl.metadata dt {
+    font-weight: bold;
+    float: left;
+    width: 150px;
+}
+
+dl.metadata dd {
+    margin-left: 160px;
 }

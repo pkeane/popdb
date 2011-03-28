@@ -13,5 +13,5 @@ define('SQLITE_PATH',BASE_PATH.'/data/db.sqlite');
 define('HANDLER_PATH',BASE_PATH.'/handlers');
 define('TEMPLATE_PATH',BASE_PATH.'/templates');
 define('TEMPLATE_COMPILE_PATH',BASE_PATH.'/templates_c');
-define('DEFAULT_HANDLER','sample');
-define('MAIN_TITLE','my app');
+define('DEFAULT_HANDLER','attributes');
+define('MAIN_TITLE','PopDB');

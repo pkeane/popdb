@@ -2,10 +2,9 @@
 
 class Value extends Pop_Db
 {
-    public $id;
-    public $attribute_id;
-    public $item_id;
-    public $text;
+
+    public $attribute;
+    public $item;
 
 	public function __construct()
 	{

@@ -2,8 +2,6 @@
 
 class Attribute extends Pop_Db
 {
-    public $table = 'attribute';
-    public $id;
     public $values = array();
 
 	public function __construct() 
@@ -12,6 +10,7 @@ class Attribute extends Pop_Db
 	}
 
     public static function findOrCreate($ascii_id) {
+        if (!$ascii_id) { $ascii_id = '-'; }
         $ascii_id = Pop_Util::dirify($ascii_id);
         $a = new Attribute();
         $a->ascii_id = $ascii_id;
@@ -23,6 +22,12 @@ class Attribute extends Pop_Db
             $a->update();
             return $a;
         }
+    }
+
+    public function getValuesCount()
+    {
+        $values = $this->getHasMany('Value');
+        return count($values);
     }
 }
 

@@ -6,6 +6,7 @@ class Pop_Db implements IteratorAggregate
 {
 
     public $db;
+    public $id;
     private $fields = array(); 
     protected $table;
     protected $order_by;
@@ -123,6 +124,7 @@ class Pop_Db implements IteratorAggregate
         $this->setLimit(1);
         $set = $this->find();
         if (count($set)) {
+            $this->id = $set[0]->id;
             foreach ($set[0] as $k => $v) {
                 if ( array_key_exists( $k, $this->fields ) ) {
                     $this->fields[ $k ] = $v;
@@ -199,9 +201,15 @@ class Pop_Db implements IteratorAggregate
             throw new PDOException('cannot create statement handle');
         }
         $sth->execute(array($this->{$related_table.'_id'}));
-        $one = $sth->fetchObject($classname);
-        $this->$related_table = $one;
-        return $one;
+        $row = $sth->fetch(PDO::FETCH_ASSOC);
+        $related->id = $row['id'];
+        foreach ($row as $k => $v) {
+            if ( array_key_exists( $k, $related->fields ) ) {
+                $related->fields[ $k ] = $v;
+            }
+        }
+        $this->$related_table = $related;
+        return $related;
     }
 
     public function getHasMany($classname)
@@ -210,14 +218,17 @@ class Pop_Db implements IteratorAggregate
         $related = new $classname();
         $related_table = $related->getTable();
         $fk = $this->table.'_id';
-        $sth = $this->db->prepare("SELECT * FROM $related_table WHERE $fk = ?");
+        $sql = "SELECT * FROM $related_table WHERE $fk = ?";
+        $sth = $this->db->prepare($sql);
         if (!$sth) {
             throw new PDOException('cannot create statement handle');
         }
         $sth->execute(array($this->id));
-        while ($obj = $sth->fetchObject($classname))
-        {
-            $list[] = $obj;
+        while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+            foreach ($row as $k => $v) {
+                $related->$k = $v;
+            }
+            $list[] = $related;
         }
         $plural = $related_table.'s';
         $this->$plural = $list;
@@ -256,6 +267,9 @@ class Pop_Db implements IteratorAggregate
     function delete()
     {
         $sth = $this->db->prepare('DELETE FROM '.$this->table.' WHERE id = ?');
+        if (!$sth) {
+            throw new PDOException('cannot create statement handle');
+        }
         return $sth->execute(array($this->id));
     }
 
