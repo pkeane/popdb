@@ -2,12 +2,15 @@
 
 {block name="main"}
 
-<form id="item" method="post" action="items/generator">
+<form class="add hide" id="targetItemForm" method="post" action="items/generator">
 <input type="submit" value="generate new item">
+<input type="button" value="cancel">
 </form>
 
 <div class="items">
-<h2>Items</h2>
+<h2>Items
+<a href="#" id="toggleItemForm" class="toggle">[new]</a>
+</h2>
 
 <ul>
 {foreach item=item from=$items}

@@ -31,5 +31,12 @@ class Pop_Handler_Items extends Pop_Handler
         $r->renderRedirect('items');
 
 	}
+
+	public function postToItems($r) 
+	{
+		$content_type = $r->getContentType();
+        print $content_type; exit;
+
+	}
 }
 

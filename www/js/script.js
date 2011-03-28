@@ -2,6 +2,7 @@ var Pop = {};
 
 $(document).ready(function() {
     Pop.initDelete('main');
+    Pop.initToggle('main');
 });
 
 Pop.initToggle = function(id) {
@@ -11,6 +12,9 @@ Pop.initToggle = function(id) {
         $('#'+tar).toggle();
         return false;
     }); 
+    $('input[type="button"][value="cancel"]').click(function() {
+            $(this).parent('form').toggle();
+            });
 };
 
 Pop.initFormDelete = function() {

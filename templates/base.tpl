@@ -23,7 +23,7 @@
 <div id="container">
 <div id="header">
 {block name="header"}
-<h1>{$main_title}</h1>
+<a href="/popdb"><h1>{$main_title}</h1></a>
 <a href="attributes">attributes</a> | 
 <a href="items">items</a> 
 <form method="get" action="search">

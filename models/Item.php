@@ -75,5 +75,25 @@ class Item extends Pop_Db
         $this->metadata = $meta;
         return $meta;
     }
+
+    public function asJson($app_root='{APP_ROOT}')
+    {
+        $item_json = array();
+        $item_json['id'] = $app_root.'/item/'.$this->serial_number;
+        $item_json['app_root'] = $app_root;
+        $item_json['created'] = $this->created;
+        $item_json['updated'] = $this->updated;
+        $links['self'] = '/item/'.$this->serial_number;
+        $links['metadata'] = '/item/'.$this->serial_number.'/metadata';
+        $item_json['links'] = $links;
+        $item_json['metadata'] = $this->getMetadata();
+        return json_encode($item_json);
+    }
+
+    public function update()
+    {
+        $this->doc = $this->asJson();
+        parent::update();
+    }
 }
 

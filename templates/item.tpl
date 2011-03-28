@@ -2,7 +2,7 @@
 
 {block name="main"}
 
-<form id="attribute" method="post" action="item/{$item->serial_number}/metadata">
+<form class="add hide" id="targetMetadataForm" method="post" action="item/{$item->serial_number}/metadata">
 <label>add metadata</label>
 <select name="ascii_id">
 <option value="">select attribute:</option>
@@ -12,9 +12,12 @@
 </select>
 <input type="text" name="value">
 <input type="submit" value="add">
+<input type="button" value="cancel">
 </form>
 
-<h2>Item</h2>
+<h2>Item
+<a href="#" class="toggle" id="toggleMetadataForm">[add metadata]</a>
+</h2>
 <div class="marker" style="background-color: #{$item->serial_number};">&nbsp;&nbsp;</div>
 {$item->serial_number} <a href="item/{$item->serial_number}" class="delete">[x]</a>
 <dl class="metadata">

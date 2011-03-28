@@ -29,6 +29,17 @@ class Pop_Handler_Item extends Pop_Handler
         }
     }
 
+    public function getItemJson($r) 
+    {
+        $item = new Item();
+        $item->serial_number = $r->get('serial_number');
+        if ( $item->findOne() ) {
+            $r->renderResponse($item->asJson($r->app_root));
+        } else {
+            $r->renderError(404);
+        }
+    }
+
     public function postToMetadata($r)
     {
         $item = new Item();

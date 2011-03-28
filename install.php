@@ -18,7 +18,7 @@ try {
     $db = new PDO('sqlite:'.$db_file);
 
     //create the table 
-    $db->exec("CREATE TABLE item (id INTEGER PRIMARY KEY, serial_number TEXT, created TEXT, updated TEXT)");    
+    $db->exec("CREATE TABLE item (id INTEGER PRIMARY KEY, serial_number TEXT, created TEXT, updated TEXT, doc TEXT)");    
     $db->exec("CREATE TABLE attribute (id INTEGER PRIMARY KEY, ascii_id TEXT, search_column TEXT, created TEXT)");    
     $db->exec("CREATE TABLE value (id INTEGER PRIMARY KEY, attribute_id INTEGER, item_id INTEGER, text TEXT)");    
 

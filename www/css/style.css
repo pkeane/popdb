@@ -31,30 +31,19 @@ div#header form {
 
 div#container {
 	margin: 0px auto;
-	width: 66%;
+	width: 660px;
 }
 
 div#main {
     padding: 10px 0px 0 10px;
 }
 
-form#attribute {
-    padding: 10px;
+form.add {
+    padding: 20px 10px;
     background-color: #fff0d0;
-    float: right;
     margin-top: -6px;
-    margin-right: 0;
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
-}
-
-form#item {
-    padding: 10px;
-    background-color: #fff0d0;
-    float: right;
-    margin-top: -6px;
-    margin-right: 0;
+    margin-left: -10px;
+    margin-bottom:20px;
     -moz-border-radius: 2px;
     -webkit-border-radius: 2px;
     border-radius: 2px;
@@ -71,6 +60,12 @@ label {
     color: #666;
     font-size: 14px;
     margin-bottom: 10px;
+}
+
+h2 a.toggle {
+    color: #33c;
+    font-weight: bold;
+    font-size: 10px;
 }
 
 .attributes ul {
@@ -91,6 +86,7 @@ div.marker {
     float: left;
     margin-right: 6px;
     width: 14px;
+    /*border: 1px solid #666;*/
     -moz-border-radius: 2px;
     -webkit-border-radius: 2px;
     border-radius: 2px;
