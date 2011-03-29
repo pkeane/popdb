@@ -19,8 +19,14 @@ try {
 
     //create the table 
     $db->exec("CREATE TABLE item (id INTEGER PRIMARY KEY, serial_number TEXT, created TEXT, updated TEXT, doc TEXT)");    
+    $db->exec("CREATE INDEX idx_serial_number ON item (serial_number)");
+
     $db->exec("CREATE TABLE attribute (id INTEGER PRIMARY KEY, ascii_id TEXT, search_column TEXT, created TEXT)");    
+    $db->exec("CREATE INDEX idx_ascii_id ON attribute (ascii_id)");
+
     $db->exec("CREATE TABLE value (id INTEGER PRIMARY KEY, attribute_id INTEGER, item_id INTEGER, text TEXT)");    
+    $db->exec("CREATE INDEX idx_item_id ON value (item_id)");
+    $db->exec("CREATE INDEX idx_attribute_id ON value (attribute_id)");
 
     $ts = date(DATE_ATOM);
     $db->exec("INSERT INTO attribute (ascii_id,search_column,created) VALUES ('title','c1','$ts')");
@@ -30,7 +36,7 @@ try {
     foreach (range(0,499) as $r) {
         $cols[] = 'c'.$r;
     }
-    $cols[] = 'doc';
+    $cols[] = 'serial_number';
     $cstr = join(',',$cols);
 
     $db->exec("CREATE VIRTUAL TABLE search USING fts3($cstr)");    

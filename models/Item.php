@@ -76,6 +76,24 @@ class Item extends Pop_Db
         return $meta;
     }
 
+    public function addMetadata($att_ascii,$value,$update=true)
+    {
+        if (!$att_ascii || !$value) {
+            return;
+        }
+        $a = Attribute::findOrCreate($att_ascii);
+        $val = new Value();
+        $val->text = $value;
+        $val->attribute_id = $a->id;
+        $val->item_id = $this->id;
+        if ($val->insert()) {
+            if ($update) {
+                $item->updated = date(DATE_ATOM);
+                $item->update();
+            }
+        }
+    }
+
     public function asJson($app_root='{APP_ROOT}')
     {
         $item_json = array();
@@ -92,8 +110,44 @@ class Item extends Pop_Db
 
     public function update()
     {
-        $this->doc = $this->asJson();
-        parent::update();
+        $meta = array();
+        $sql = "
+            SELECT attribute.search_column, value.text
+            FROM attribute,value
+            WHERE value.item_id = ?
+            AND value.attribute_id = attribute.id
+            ";
+        $sth = $this->db->prepare($sql);
+        $sth->execute(array($this->id));
+        while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+            $key = $row['search_column'];
+            $val = $row['text'];
+            if (isset($meta[$key])) {
+                $meta[$key][] = $val;
+            } else {
+                $meta[$key] = array($val);
+            }
+        }
+        Search::findOrCreate($this->serial_number);
+        $fields = array();
+        $values = array();
+        foreach( $meta as $sc => $vals) {
+            $fields[]= $sc." = ?";
+            $values[]= join(' ',$vals);
+        }
+        $set = join( ",", $fields );
+        $sql = "UPDATE search SET $set WHERE rowid=?";
+        $values[] = hexdec($this->serial_number);
+        $sth = $this->db->prepare( $sql );
+        if (!$sth->execute($values)) {
+            $errs = $sth->errorInfo(); 
+            if (isset($errs[2])) {
+                throw new PDOException('could not update '.$errs[2]);
+            }
+        } else {
+            $this->doc = $this->asJson();
+            parent::update();
+        }
     }
 }
 

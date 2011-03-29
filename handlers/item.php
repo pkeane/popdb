@@ -21,8 +21,10 @@ class Pop_Handler_Item extends Pop_Handler
         $item->serial_number = $r->get('serial_number');
 
         if ( $item->findOne() ) {
-            $item->getMetadata();
             $t->assign('item',$item);
+            $data = json_decode($item->doc,1);
+            $metadata = $data['metadata'];
+            $t->assign('metadata',$metadata);
             $r->renderResponse($t->fetch('item.tpl'));
         } else {
             $r->renderRedirect('items');
@@ -34,7 +36,9 @@ class Pop_Handler_Item extends Pop_Handler
         $item = new Item();
         $item->serial_number = $r->get('serial_number');
         if ( $item->findOne() ) {
-            $r->renderResponse($item->asJson($r->app_root));
+            //$item_json = str_replace('{APP_ROOT}',$r->app_root,$item->doc);
+            $item_json = $item->asJson($r->app_root);
+            $r->renderResponse($item_json);
         } else {
             $r->renderError(404);
         }
@@ -54,13 +58,6 @@ class Pop_Handler_Item extends Pop_Handler
             $val->attribute_id = $a->id;
             $val->item_id = $item->id;
             if ($val->insert()) {
-
-                $s = new Search();
-                $scol = $a->search_column;
-                $s->$scol = $val->text;
-                $s->doc = $item->serial_number;
-                $s->insert();
-
                 $item->updated = date(DATE_ATOM);
                 $item->update();
             }

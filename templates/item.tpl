@@ -21,7 +21,7 @@
 <div class="marker" style="background-color: #{$item->serial_number};">&nbsp;&nbsp;</div>
 {$item->serial_number} <a href="item/{$item->serial_number}" class="delete">[x]</a>
 <dl class="metadata">
-{foreach item=val_array key=att from=$item->metadata}
+{foreach item=val_array key=att from=$metadata}
 <dt>{$att}</dt>
 <dd>
 <ul>
