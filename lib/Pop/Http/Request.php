@@ -125,9 +125,9 @@ class Pop_Http_Request
 		}
 	}
 
-	public function initCache($cache)
+	public function initCache()
 	{
-		$this->cache = $cache;
+		$this->cache = Pop_Cache::get();
 	}
 
 	public function getCache()
