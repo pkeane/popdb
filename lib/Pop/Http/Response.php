@@ -54,17 +54,18 @@ class Pop_Http_Response
 		$this->mime_type = $request->response_mime_type;
 	}
 
-	public function render($content,$status_code=null)
+	public function render($content,$set_cache=true,$status_code=null)
 	{
+		if ($set_cache) {
+			$cache_id = $this->request->getCacheId();
+			$this->request->getCache()->setData($cache_id,$content);
+		}
 		if ($status_code) {
 			$message = $status_code.' '.self::$codes[$status_code]; 
 			header("HTTP/1.1 $message");
 		}
-
-		//experimental 9/11/2010 don't allow caching (should prob. only
-		//have on when editing is happening ....
-		header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-		header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+		//header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+		//header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 
 		header("Content-Type: ".$this->mime_type."; charset=utf-8");
 		echo $content;

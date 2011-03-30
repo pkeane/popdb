@@ -30,6 +30,7 @@ class Pop_Http_Request
 	//members are variables 'set'
 	private $members = array();
 	private $params;
+    private $cache;
 	private $url_params = array();
 	private $user;
 	private $db;
@@ -121,6 +122,31 @@ class Pop_Http_Request
 			return $headers[$name];
 		} else {
 			return false;
+		}
+	}
+
+	public function initCache($cache)
+	{
+		$this->cache = $cache;
+	}
+
+	public function getCache()
+	{
+		return $this->cache;
+	}
+
+	public function getCacheId()
+	{
+		//cache buster deals w/ aggressive browser caching.  Not to be used on server (so normalized).
+		$query_string = preg_replace("!cache_buster=[0-9]*!i",'cache_buster=stripped',$this->query_string);
+		return $this->method.'|'.$this->path.'|'.$this->format.'|'.$query_string;
+	}
+
+	public function checkCache($ttl=null)
+	{
+		$content = $this->cache->getData($this->getCacheId(),$ttl);
+		if ($content) {
+			$this->renderResponse($content,false);
 		}
 	}
 
@@ -288,13 +314,13 @@ class Pop_Http_Request
 		return false;
 	}
 
-	public function renderResponse($content,$status_code=null)
+	public function renderResponse($content,$set_cache=true,$status_code=null)
 	{
 		$response = new Pop_Http_Response($this);
 		if ('get' != $this->method) {
 			$set_cache = false;
 		}
-		$response->render($content,$status_code);
+		$response->render($content,$set_cache,$status_code);
 		exit;
 	}
 
