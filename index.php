@@ -34,4 +34,5 @@ define('BASE_PATH',dirname(__FILE__));
 include BASE_PATH.'/inc/bootstrap.php';
 
 $r = new Pop_Http_Request();
+$r->initCache();
 $r->getHandlerObject()->dispatch($r);

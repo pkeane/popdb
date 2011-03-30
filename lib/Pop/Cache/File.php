@@ -9,9 +9,9 @@ class Pop_Cache_File extends Pop_Cache
 	private $tempfilename;
 	private $ttl;
 
-	function __construct($config,$ttl=10)
+	function __construct($cache_path,$ttl=10)
 	{
-		$this->cache_dir = $config->getCacheDir();
+		$this->cache_dir = $cache_path;
 		$this->ttl = $ttl;
 		$this->_initDir();
 	}

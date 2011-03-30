@@ -7,11 +7,13 @@ class Pop_Cache
 {
 	private function __construct() {}
 
-	public static function get($config,$ttl=10)
+	public static function get($ttl=10)
 	{
-		$class_name = 'Pop_Cache_'.ucfirst($config->getCacheType());
+        $cache_type = CACHE_TYPE;
+        $cache_path = CACHE_PATH;
+		$class_name = 'Pop_Cache_'.ucfirst($cache_type);
 		if (class_exists($class_name)) {
-			return new $class_name($config,$ttl);
+			return new $class_name($cache_path,$ttl);
 		} else {
 			throw new Pop_Cache_Exception("Error: $class_name is not a valid class!");
 		}

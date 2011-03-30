@@ -12,6 +12,7 @@ spl_autoload_register('popAutoload');
 define('SQLITE_PATH',BASE_PATH.'/data/db.sqlite');
 define('HANDLER_PATH',BASE_PATH.'/handlers');
 define('TEMPLATE_PATH',BASE_PATH.'/templates');
+define('CACHE_TYPE','file');
 define('CACHE_PATH',BASE_PATH.'/cache');
 define('TEMPLATE_COMPILE_PATH',BASE_PATH.'/cache');
 define('DEFAULT_HANDLER','attributes');
