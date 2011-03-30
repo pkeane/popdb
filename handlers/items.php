@@ -15,6 +15,7 @@ class Pop_Handler_Items extends Pop_Handler
     {
         $t = new Pop_Template($r);
         $items = new Item();
+        $items->setColumns(array('id','serial_number'));
         $items->orderBy('updated DESC');
         $t->assign('items',$items->find());
         $r->renderResponse($t->fetch('items.tpl'));

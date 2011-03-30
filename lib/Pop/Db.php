@@ -8,6 +8,7 @@ class Pop_Db implements IteratorAggregate
     public $db;
     public $id;
     private $fields = array(); 
+    private $columns = array();
     protected $table;
     protected $order_by;
     protected $limit;
@@ -49,6 +50,11 @@ class Pop_Db implements IteratorAggregate
         return false;
     }
 
+    public function setColumns($coll_array) 
+    {
+        $this->columns = $coll_array;
+    }
+
     public function load($id)
     {
         $table = $this->getTable();
@@ -88,11 +94,18 @@ class Pop_Db implements IteratorAggregate
             }
             $sets[] = "$f $op $v";
         }
+
+        if (count($this->columns)) {
+            $column_string = join(',',$this->columns);
+        } else {
+            $column_string = '*';
+        }
+
         $where = join( " AND ", $sets );
         if ($where) {
-            $sql = "SELECT * FROM ".$table. " WHERE ".$where;
+            $sql = "SELECT ".$column_string." FROM ".$table. " WHERE ".$where;
         } else {
-            $sql = "SELECT * FROM ".$table;
+            $sql = "SELECT ".$column_string." FROM ".$table;
         }
         if (isset($this->order_by)) {
             $sql .= " ORDER BY $this->order_by";
