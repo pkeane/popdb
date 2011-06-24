@@ -41,7 +41,7 @@ try {
 
     $db->exec("CREATE VIRTUAL TABLE search USING fts3($cstr)");    
     $db = NULL;
-    echo "database has been created";
+    echo "<html><body>database has been created <a href=\".\">continue</a></body></html>";
 } catch(PDOException $e) {
     print 'Exception : '.$e->getMessage();
 }

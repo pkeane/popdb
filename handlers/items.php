@@ -13,7 +13,7 @@ class Pop_Handler_Items extends Pop_Handler
 
     public function getItems($r) 
     {
-        $r->checkCache(33);
+    //    $r->checkCache(33);
         $t = new Pop_Template($r);
         $items = new Item();
         $items->setColumns(array('id','serial_number'));

@@ -9,6 +9,11 @@ function popAutoload($class_name) {
 
 spl_autoload_register('popAutoload');
 
+if (!file_exists(BASE_PATH.'/data/db.sqlite')) {
+    include BASE_PATH.'/install.php';
+    exit;
+}
+
 define('SQLITE_PATH',BASE_PATH.'/data/db.sqlite');
 define('HANDLER_PATH',BASE_PATH.'/handlers');
 define('TEMPLATE_PATH',BASE_PATH.'/templates');
