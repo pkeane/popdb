@@ -29,7 +29,11 @@ class Pop_Handler_Search extends Pop_Handler
         $t->assign('ascii_id',$ascii_id);
         $t->assign('q',$q);
         $serial_numbers = Search::match($q,$col);
-        $t->assign('serial_numbers',$serial_numbers);
+        $items = array();
+        foreach ($serial_numbers as $sn) {
+            $items[] = Item::getBySerialNumber($sn);
+        }
+        $t->assign('items',$items);
 		$r->renderResponse($t->fetch('search.tpl'));
 	}
 }

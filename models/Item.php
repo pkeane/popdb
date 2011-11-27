@@ -52,11 +52,34 @@ class Item extends Pop_Db
         return count($values);
     }
 
+    public function __get($key)
+    {
+        if ('title' == $key) {
+            $meta = array();
+            $sql = "
+                SELECT value.text
+                FROM attribute,value
+                WHERE value.item_id = ?
+                AND value.attribute_id = attribute.id
+                AND attribute.ascii_id = 'title'
+                ";
+            $sth = $this->db->prepare($sql);
+            $sth->execute(array($this->id));
+            $title = $sth->fetchColumn();
+            if ($title) {
+                return $title;
+            } else {
+                return $this->serial_number;
+            }
+        }
+        return parent::__get($key);
+    }
+
     public function getMetadata()
     {
         $meta = array();
         $sql = "
-            SELECT attribute.ascii_id, value.text
+            SELECT attribute.ascii_id, value.text, value.id
             FROM attribute,value
             WHERE value.item_id = ?
             AND value.attribute_id = attribute.id
@@ -66,10 +89,11 @@ class Item extends Pop_Db
         while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
             $key = $row['ascii_id'];
             $val = $row['text'];
+            $href = 'item/'.$this->serial_number.'/keyval/'.$row['id'];
             if (isset($meta[$key])) {
-                $meta[$key][] = $val;
+                $meta[$key][] = array('href' => $href, 'text' => $val);
             } else {
-                $meta[$key] = array($val);
+                $meta[$key] = array(array('href' => $href, 'text' => $val));
             }
         }
         $this->metadata = $meta;
@@ -147,6 +171,29 @@ class Item extends Pop_Db
         } else {
             $this->doc = $this->asJson();
             parent::update();
+        }
+    }
+
+    public function expunge()
+    {
+        $sql = "DELETE FROM value WHERE item_id=?";
+        $sth = $this->db->prepare( $sql );
+        if (!$sth->execute(array($this->id))) {
+            $errs = $sth->errorInfo(); 
+            if (isset($errs[2])) {
+                throw new PDOException('could not delete values'.$errs[2]);
+            }
+        } 
+        $sql = "DELETE FROM search WHERE rowid=?";
+        $id = hexdec($this->serial_number);
+        $sth = $this->db->prepare( $sql );
+        if (!$sth->execute(array($id))) {
+            $errs = $sth->errorInfo(); 
+            if (isset($errs[2])) {
+                throw new PDOException('could not delete '.$errs[2]);
+            }
+        } else {
+            return $this->delete();
         }
     }
 }

@@ -10,14 +10,14 @@ div#header {
 	background-color: #e0e6ef;
     padding: 16px 10px 0px 10px;
     margin: 6px 0 0 0;
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
 }
 
 div#header h1 {
     float: left;
-    margin-top: -6px;
+    margin-top: -3px;
     margin-right: 10px;
     font-weight: bold;
     font-size: 18px;
@@ -30,8 +30,7 @@ div#header form {
 
 
 div#container {
-	margin: 0px auto;
-	width: 660px;
+    margin: 10px;
 }
 
 div#main {
@@ -44,9 +43,9 @@ form.add {
     margin-top: -6px;
     margin-left: -10px;
     margin-bottom:20px;
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
 }
 
 label {
@@ -82,33 +81,35 @@ a.delete {
     font-size: 11px;
 }
 
-div.marker {
-    float: left;
-    margin-right: 6px;
-    width: 14px;
-    /*border: 1px solid #666;*/
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
-}
-
 dl.metadata {
     padding: 10px;
-    background-color: #fff0d0;
-    background-color: #f3f3f3;
     margin-top: 12px;
     margin-right: 0;
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
 }
 
 dl.metadata dt {
     font-weight: bold;
-    float: left;
-    width: 150px;
 }
 
 dl.metadata dd {
-    margin-left: 160px;
+    margin-left: 50px;
+    margin-bottom: 10px;
 }
+
+textarea {
+    width: 98%;
+}
+a.edit {
+    font-size: 11px;
+    font-weight: bold;
+    color: #900;
+}
+
+div.controls {
+    float: right;
+    margin-right: 20px;
+}
+

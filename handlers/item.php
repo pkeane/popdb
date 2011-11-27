@@ -5,10 +5,53 @@ class Pop_Handler_Item extends Pop_Handler
     public $resource_map = array(
         '{serial_number}' => 'item',
         '{serial_number}/metadata' => 'metadata',
+        '{serial_number}/keyval/{id}' => 'keyval',
     );
 
     protected function setup($r)
     {
+    }
+
+    public function postToKeyval($r) 
+    {
+        $item = new Item();
+        $item->serial_number = $r->get('serial_number');
+        if ( $item->findOne() ) {
+            $kv = new Value();
+            if (!$kv->load($r->get('id'))) {
+                $r->renderError(404,'no such keyval');
+            }
+            $kv->text = $r->get('text');
+            $kv->update();
+            $item->updated = date(DATE_ATOM);
+            $item->update();
+            $r->renderRedirect('item/'.$item->serial_number);
+        } else {
+            $r->renderError(404,'no such item');
+        }
+    }
+
+    public function getKeyval($r) 
+    {
+        $t = new Pop_Template($r);
+        $atts = new Attribute();
+        $atts->orderBy('ascii_id');
+        $t->assign('attributes',$atts->find());
+        $item = new Item();
+        $item->serial_number = $r->get('serial_number');
+
+        if ( $item->findOne() ) {
+            $kv = new Value();
+            if (!$kv->load($r->get('id'))) {
+                $r->renderError(404,'no such keyval');
+            }
+            $kv->getAttribute();
+            $t->assign('kv',$kv);
+            $t->assign('item',$item);
+            $r->renderResponse($t->fetch('keyval.tpl'));
+        } else {
+            $r->renderError(404,'no such item');
+        }
     }
 
     public function getItem($r) 
@@ -21,6 +64,7 @@ class Pop_Handler_Item extends Pop_Handler
         $item->serial_number = $r->get('serial_number');
 
         if ( $item->findOne() ) {
+            $item->update();
             $t->assign('item',$item);
             $data = json_decode($item->doc,1);
             $metadata = $data['metadata'];
@@ -73,10 +117,7 @@ class Pop_Handler_Item extends Pop_Handler
         $item = new Item();
         $item->serial_number = $r->get('serial_number');
         if ( $item->findOne() ) {
-            if ($item->getValuesCount()) {
-                $r->renderError(409,'sorry this item has values');
-            }
-            if ($item->delete()) {
+            if ($item->expunge()) {
                 $r->renderResponse('deleted item');
             } else {
                 $r->renderError(500);

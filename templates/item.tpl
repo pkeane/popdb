@@ -18,7 +18,6 @@
 <h2>Item
 <a href="#" class="toggle" id="toggleMetadataForm">[add metadata]</a>
 </h2>
-<div class="marker" style="background-color: #{$item->serial_number};">&nbsp;&nbsp;</div>
 {$item->serial_number} <a href="item/{$item->serial_number}" class="delete">[x]</a>
 <dl class="metadata">
 {foreach item=val_array key=att from=$metadata}
@@ -26,7 +25,7 @@
 <dd>
 <ul>
 {foreach item=val from=$val_array}
-<li>{$val}</li>
+<li>{$val.text|nl2br} <a href="{$val.href}" class="edit">[edit]</a></li>
 {/foreach}
 </ul>
 </dd>

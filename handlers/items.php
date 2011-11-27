@@ -4,6 +4,7 @@ class Pop_Handler_Items extends Pop_Handler
 {
     public $resource_map = array(
         '/' => 'items',
+        'new' => 'new_item_form',
         'generator' => 'generator',
     );
 
@@ -11,9 +12,32 @@ class Pop_Handler_Items extends Pop_Handler
     {
     }
 
+    public function getNewItemForm($r) 
+    {
+        $t = new Pop_Template($r);
+        $r->renderResponse($t->fetch('new_item_form.tpl'));
+    }
+
+    public function getItemsJson($r) 
+    {
+        $items = new Item();
+        $items->orderBy('updated DESC');
+        //$items->setLimit(10);
+        $set = array();
+        foreach ($items->find() as $item) {
+            $item = clone($item);
+            $set[] = array(
+                'serial_number' => $item->serial_number,
+                'title' => $item->title, 
+                'updated' => $item->updated,
+            );
+        }
+        $r->renderResponse(json_encode($set));
+    }
+
     public function getItems($r) 
     {
-    //    $r->checkCache(33);
+        //    $r->checkCache(33);
         $t = new Pop_Template($r);
         $items = new Item();
         $items->setColumns(array('id','serial_number'));
@@ -25,7 +49,30 @@ class Pop_Handler_Items extends Pop_Handler
 
     public function postToGenerator($r) 
     {
-        Item::generate();
+        $item = Item::generate();
+
+        if ($r->get('note')) {
+            $a = Attribute::findOrCreate('note');
+            $val = new Value();
+            $val->text = $r->get('note');
+            $val->attribute_id = $a->id;
+            $val->item_id = $item->id;
+            if ($val->insert()) {
+                $item->updated = date(DATE_ATOM);
+                $item->update();
+            }
+        }
+        if ($r->get('title')) {
+            $a = Attribute::findOrCreate('title');
+            $val = new Value();
+            $val->text = $r->get('title');
+            $val->attribute_id = $a->id;
+            $val->item_id = $item->id;
+            if ($val->insert()) {
+                $item->updated = date(DATE_ATOM);
+                $item->update();
+            }
+        }
         $r->renderRedirect('items');
 
     }

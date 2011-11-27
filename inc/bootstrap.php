@@ -20,5 +20,5 @@ define('TEMPLATE_PATH',BASE_PATH.'/templates');
 define('CACHE_TYPE','file');
 define('CACHE_PATH',BASE_PATH.'/cache');
 define('TEMPLATE_COMPILE_PATH',BASE_PATH.'/cache');
-define('DEFAULT_HANDLER','attributes');
-define('MAIN_TITLE','PopDB');
+define('DEFAULT_HANDLER','items');
+define('MAIN_TITLE','Notes');

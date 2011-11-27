@@ -43,6 +43,9 @@ class Pop_Db implements IteratorAggregate
 
     public function __set( $key, $value )
     {
+        if ('id' == $key) {
+            $this->id = $value;
+        }
         if ( array_key_exists( $key, $this->fields ) ) {
             $this->fields[ $key ] = $value;
             return true;
@@ -65,6 +68,7 @@ class Pop_Db implements IteratorAggregate
         $sth->execute(array($id));
         $row = $sth->fetch(PDO::FETCH_ASSOC);
         foreach ($row as $k => $v) {
+            if ('id' == $k) { $this->id = $v; }
             $this->fields[$k] = $v;
         }
         return $this;

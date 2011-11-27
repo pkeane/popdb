@@ -11,5 +11,11 @@ class Value extends Pop_Db
         parent::__construct();
 	}
 
+    public function getAttribute()
+    {
+        $att = new Attribute();
+        $att->load($this->attribute_id);
+        $this->attribute = $att;
+    }
 }
 

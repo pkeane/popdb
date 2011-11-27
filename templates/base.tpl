@@ -12,7 +12,7 @@
 {block name="head-links"}{/block}
 
 {block name="head-js"}
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
 {/block}
 
 {block name="head"}{/block}
@@ -23,9 +23,9 @@
 <div id="container">
 <div id="header">
 {block name="header"}
-<a href="/popdb"><h1>{$main_title}</h1></a>
+<a href="{$app_root}"><h1>{$main_title}</h1></a>
 <a href="attributes">attributes</a> | 
-<a href="items">items</a> 
+<a href="items/new">new item</a> 
 <form method="get" action="search">
 search
 <input type="text" name="q">

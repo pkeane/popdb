@@ -24,6 +24,19 @@ class Pop_Handler_Attribute extends Pop_Handler
         }
     }
 
+    public function getAttributeJson($r) 
+    {
+        $t = new Pop_Template($r);
+        $att = new Attribute();
+        $att->ascii_id = $r->get('ascii_id');
+
+        if ( $att->findOne() ) {
+            $r->renderResponse(json_encode($att->asArray()));
+        } else {
+            $r->renderError(404);
+        }
+    }
+
     public function deleteAttribute($r) 
     {
         $att = new Attribute();

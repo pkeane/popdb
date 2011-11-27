@@ -3,7 +3,15 @@ var Pop = {};
 $(document).ready(function() {
     Pop.initDelete('main');
     Pop.initToggle('main');
+    Pop.initTextarea();
 });
+
+Pop.initTextarea = function() {
+    var t = $('textarea');
+    var str = t.val();
+    var rows = str.split("\n").length;
+    $('textarea').attr('rows',rows);
+};
 
 Pop.initToggle = function(id) {
     $('#'+id).find('a[class="toggle"]').click(function() {
